@@ -109,14 +109,22 @@ int* shakeSort(int* entrada, int n){
 // Retirado de: http://pt.wikipedia.org/wiki/Insertion_sort#Algorithm
 // e: http://en.wikipedia.org/wiki/Insertion_sort
 int* insertionSort(int* entrada, int n){
-	int i, j, eleito;
-	for (i = 1; i < tam; i++){
-		eleito = numeros[i];
-		j = i - 1;
-		while ((j>=0) && (eleito < numeros[j])) {
-			numeros[j+1] = numeros[j];
+	int i, j, temp;
+
+	/* 
+	 * Esse metodo pode realizar um número altissimo de permutações
+	 * Nesse caso, a cada fim da iteracao de i teremos o vetor ordenado até aquele indice
+	 * Para cada casa do vetor que for "checada", o loop while verificará (de traz pra frente)
+	 * se a aquela casa for menor do que a anterior, o algoritmo permuta um por um até que esta 
+	 * chegue em sua posição correta.
+	 */
+	for (i=1; i<n; i++){
+		temp = entrada[i];
+		j = i-1;
+		while ((j>=0) && (temp < entrada[j])) {
+			entrada[j+1] = entrada[j];
 			j--;
 		}
-		numeros[j+1] = eleito;
+		entrada[j+1] = temp;
 	}
 }
