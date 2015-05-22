@@ -3,46 +3,72 @@
 #include <string.h>
 
 
-// ------------------------------------------PERMUTACAO-------------------------------
-// Retirado de: http://goo.gl/KgeVIt
-int* permutacao(int* entrada, int n){
-	int i, j, temp;
-
-	//primeiro for faz com que cada indice do vetor seja verificado
-	for(i=0; i<n; i++){
-		//segundo for percorre do fim do vetor até o indice que esta sendo verificado (descrescendo)
-		//e carrega consigo o menor elemento daquele subvetor
-		for(j=n-1; j>=i; j--){
-			//toda vez que acha um elemento menor, troca de lugar
-			if(entrada[i] > entrada[j]){
-				temp = entrada[i];
-				entrada[i] = entrada[j];
-				entrada[j] = temp;
-			}
-		}
-	}
-
-/*
- * Pior caso:
- * elementos ordenados em forma decrescente
+/* ------------------------------------------PERMUTACAO-------------------------------
+ * O objetivo desse método é criar todas as permutações possiveis sobre as casas
+ * do vetor, até que uma delas seja a combinação que gere um vetor com entradas ordenadas
+ * é quase como jogar na mega-sena. O algoritmo é composto por três funções:
+ * a função verificar, que gera o vetor a partir da combinação de permutações e verifica se este está ordenado
+ * a função visit, que gera as combinações
+ * e a função chamadora.
+ * A função visit foi escrita com base em:
+ * http://www.bearcave.com/random_hacks/permute.html
+ * http://newton.ex.ac.uk/teaching/resources/jmr/recursion.html
  */
 
- return entrada;
+int verificar(int* entrada, int* permutacao, int* aux, int n){
+	int i;
+
+	for(i=0; i<n; i++){
+		aux[i] = entrada[(permutacao[i])];
+	}
+
+	if(estaOrdenado(aux))
+		return 1;
+	else return 0;
+}
+
+void visit(int* entrada, int* permutacao, int* aux, int n, int k){
+  	int i;
+  	static int level = -1;
+
+    level = level+1;
+    permutacao[k] = level;
+    if (level == n)
+      if(verificar(entrada, permutacao, aux, n))
+      	return;
+    else
+      for (i = 0; i < n; i++)
+        if (permutacao[i] == 0)
+          visit(entrada, permutacao, aux, n, i);
+    
+    level = level-1;
+    permutacao[k] = 0;
 }
 
 
-// ------------------------------------------BUBBLE SORT-------------------------------
- //http://pt.wikipedia.org/wiki/Bubble_sort#Implementa.C3.A7.C3.A3o
+
+int* permutacao(int* entrada, int n){
+	int* permutacao = (int)malloc(n*sizeof);
+	int* aux = (int)malloc(n*sizeof);
+	
+	visit(entrada, permutacao, aux, n, 0);
+
+ 	return entrada;
+}
+
+
+/* ------------------------------------------BUBBLE SORT-------------------------------
+ * http://pt.wikipedia.org/wiki/Bubble_sort#Implementa.C3.A7.C3.A3o
+ *
+ * O bubble sort é parecido com o permuta, em termos de ordem de grandeza das comparações
+ * Basicamente, o algoritmo percorre o vetor do fim ao inicio
+ * Em cada iteracao de i, j faz i iteracoes
+ * verificando se o elemento no menor indice é maior que o elemento no indice posterior (j+1), 
+ * se for, troca as posições destes.
+ */
 int* buubleSort(int* entrada, int n){
 	int i, j, temp;
 
-	/*
-	 * O bubble sort é parecido com o permuta, em termos de ordem de grandeza das comparações
-	 * Basicamente, o algoritmo percorre o vetor do fim ao inicio
-	 * Em cada iteracao de i, j faz i iteracoes
-	 * verificando se o elemento no menor indice é maior que o elemento no indice posterior (j+1), 
-	 * se for, troca as posições destes.
-	 */
 	for(i=n-1; i>0; i--){
  		for(j=0; j<i; j++){
  			if(entrada[j]>entrada[j+1]){
@@ -57,23 +83,22 @@ int* buubleSort(int* entrada, int n){
 }
 
 
-// ------------------------------------------SHAKE SORT-------------------------------
-// Retirado de: http://rosettacode.org/wiki/Sorting_algorithms/Cocktail_sort#C
-// e: http://pt.wikipedia.org/wiki/Cocktail_sort#C.C3.B3digo_em_C (otimizacao topo/pe)
+/* ------------------------------------------SHAKE SORT-------------------------------
+ * Retirado de: http://rosettacode.org/wiki/Sorting_algorithms/Cocktail_sort#C
+ * e: http://pt.wikipedia.org/wiki/Cocktail_sort#C.C3.B3digo_em_C (otimizacao topo/pe)
+ *
+ * Achei esse algoritmo meio samba do criolo doido
+ * O que ele faz é o seguinte:
+ * Enquanto temp for igual a zero (se houver algum elemento nao ordenado, temp é setada zero)
+ * Percorre o vetor duas vezes para cada loop do while
+ * Na primeira vez carrega o maior elemento para sua ordem no vetor (i indo de zero a n)
+ * Na segunda vez carrega o menor para sua ordem (i indo de n a zero)
+ * Se um dos dois casos nao setar temp = 0, termina o loop do while e o vetor está ordenado
+ */
 int* shakeSort(int* entrada, int n){
 	int i, j, topo = n, pe = 0;
 	int temp = 0;
 
-
-	/*
-	 * Achei esse algoritmo meio samba do criolo doido
-	 * O que ele faz é o seguinte:
-	 * Enquanto temp for igual a zero (se houver algum elemento nao ordenado, temp é setada zero)
-	 * Percorre o vetor duas vezes para cada loop do while
-	 * Na primeira vez carrega o maior elemento para sua ordem no vetor (i indo de zero a n)
-	 * Na segunda vez carrega o menor para sua ordem (i indo de n a zero)
-	 * Se um dos dois casos nao setar temp = 0, termina o loop do while e o vetor está ordenado
-	 */
 	while ((!temp) && (pe<topo) {
 		for (i=pe, t=1; i<topo; i++) {
 			if (entrada[i] > entrada[i+1]){ 
@@ -105,19 +130,20 @@ int* shakeSort(int* entrada, int n){
 }
 
 
-// ------------------------------------------INSERTION SORT-------------------------------
-// Retirado de: http://pt.wikipedia.org/wiki/Insertion_sort#Algorithm
-// e: http://en.wikipedia.org/wiki/Insertion_sort
+/* ------------------------------------------INSERTION SORT-------------------------------
+ * Retirado de: http://pt.wikipedia.org/wiki/Insertion_sort#Algorithm
+ * e: http://en.wikipedia.org/wiki/Insertion_sort
+ * 
+ * Esse metodo pode realizar um número altissimo de permutações
+ * Nesse caso, a cada fim da iteracao de i teremos o vetor ordenado até aquele indice
+ * Para cada casa do vetor que for "checada", o loop while verificará (de traz pra frente)
+ * se a aquela casa for menor do que a anterior, o algoritmo permuta um por um até que esta 
+ * chegue em sua posição correta.
+ */
 int* insertionSort(int* entrada, int n){
 	int i, j, temp;
 
-	/* 
-	 * Esse metodo pode realizar um número altissimo de permutações
-	 * Nesse caso, a cada fim da iteracao de i teremos o vetor ordenado até aquele indice
-	 * Para cada casa do vetor que for "checada", o loop while verificará (de traz pra frente)
-	 * se a aquela casa for menor do que a anterior, o algoritmo permuta um por um até que esta 
-	 * chegue em sua posição correta.
-	 */
+
 	for (i=1; i<n; i++){
 		temp = entrada[i];
 		j = i-1;
@@ -128,3 +154,4 @@ int* insertionSort(int* entrada, int n){
 		entrada[j+1] = temp;
 	}
 }
+
