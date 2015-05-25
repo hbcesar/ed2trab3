@@ -155,3 +155,59 @@ int* insertionSort(int* entrada, int n){
 	}
 }
 
+
+/* ------------------------------------------SHELL SORT-------------------------------
+ * Retirado de: http://pt.wikipedia.org/wiki/Shell_sort#C.C3.B3digo_em_C
+ * http://fr.wikipedia.org/wiki/Tri_de_Shell
+ * http://en.wikipedia.org/wiki/Shellsort
+ * https://www.youtube.com/watch?v=M9YCh-ZeC7Y
+ * O big deal desse método consiste em comparar elementos com uma distância (gap) consideravel.
+ * Então, esse gap é progressivamente reduzido. Isso faz com que elementos fora do lugar possam
+ * ser movidos para sua posição correta mais rapidamente do que em simples insertion sort.
+ * Na implementação a seguir, o gap é reduzido a metade.
+ */
+void shellSort(int *entrada, int n) {
+    int i, j, aux;
+    int gap = n;
+
+    while ( gap > 1) {
+        gap = gap/2;
+
+        for(i = gap; i<n; i++) {
+            aux = entrada[i];
+            j = i - gap;
+
+            while (j >= 0 && aux < entrada[j]) {
+                entrada [j + gap] = entrada[j];
+                j = j - gap;
+            }
+
+            entrada [j + gap] = aux;
+        }
+    }
+}
+
+/* ------------------------------------------SELECTION SORT-------------------------------
+ * Retirado de: http://pt.wikipedia.org/wiki/Selection_sort
+ * https://www.youtube.com/watch?v=BSXIolKg5F8
+ */
+void selection_sort(int entrada, int n) 
+{ 
+  int i, j, min, aux;
+
+	for(i=0; i<(n-1); i++){
+		min = i;
+
+		for(j=(i+1); j<tam; j++){
+			if(num[j] < num[min]){
+				min = j;
+			}
+		}
+
+		if(i! = min){
+			aux = num[i];
+			num[i] = num[min];
+			num[min] = aux;
+		}
+	}
+}
