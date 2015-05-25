@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "TADPermutacao.h"
-#include "TADBubbleSort.h"
-#include "TADShakeSort.h"
+#include "TADAlgoritmosOrdenacao.h"
+#include "TADFuncoes.h"
 
 void lerEntrada(int* entrada, int n){
 	int i;
 
 	for(i=0; i<n; i++){
-		scanf("%d", entrada[i]);
+		scanf("%d", entrada+i);
 	}
 }
 
@@ -26,17 +25,17 @@ int main(int argc, char* argv []){
 	lerEntrada(entrada, n);
 
 	if(strcmp(argv[1], "perm") == 0){
-		ordenado = permutacao(entrada, n);
+		ordenado = permutacao(entrada, n); //DEFEITO
 	} else if(strcmp(argv[1], "bubble") == 0){
 		ordenado = bubbleSort(entrada, n);
 	} else if(strcmp(argv[1], "shake") == 0){
-		ordenado = shakeSort(entrada, n);
+		ordenado = shakeSort(entrada, n); //DEFEITO
 	} else if(strcmp(argv[1], "insertion") == 0){
-
+		ordenado = insertionSort(entrada, n);
 	} else if(strcmp(argv[1], "shell") == 0){
-
+		ordenado = shellSort(entrada, n);
 	} else if(strcmp(argv[1], "selection") == 0){
-
+		ordenado = selectionSort(entrada, n);
 	} else if(strcmp(argv[1], "rank") == 0){
 
 	} else if(strcmp(argv[1], "quickrecursivoprimeiro") == 0){
@@ -64,6 +63,8 @@ int main(int argc, char* argv []){
 	} else {
 		printf("Algoritmo especificado não é válido\n");
 	}
+
+	imprimir(ordenado, n);
 
 	return 0;
 

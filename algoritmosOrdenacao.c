@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "TADFuncoes.h"
 
 
 /* ------------------------------------------PERMUTACAO-------------------------------
@@ -22,34 +23,38 @@ int verificar(int* entrada, int* permutacao, int* aux, int n){
 		aux[i] = entrada[(permutacao[i])];
 	}
 
-	if(estaOrdenado(aux))
+	if(estaOrdenado(aux, n))
 		return 1;
 	else return 0;
 }
 
 void visit(int* entrada, int* permutacao, int* aux, int n, int k){
-  	int i;
-  	static int level = -1;
+	int i;
+	static int level = -1;
 
-    level = level+1;
-    permutacao[k] = level;
-    if (level == n)
-      if(verificar(entrada, permutacao, aux, n))
-      	return;
-    else
-      for (i = 0; i < n; i++)
-        if (permutacao[i] == 0)
-          visit(entrada, permutacao, aux, n, i);
+	level = level+1;
+	permutacao[k] = level;
+	if (level == n){
+		if(verificar(entrada, permutacao, aux, n)){
+			return;
+ 		}
+	} else {
+		for (i = 0; i < n; i++){
+			if (permutacao[i] == 0){
+				visit(entrada, permutacao, aux, n, i);
+			}
+		}
+	}
     
-    level = level-1;
-    permutacao[k] = 0;
+	level = level-1;
+	permutacao[k] = 0;
 }
 
 
 
 int* permutacao(int* entrada, int n){
-	int* permutacao = (int)malloc(n*sizeof);
-	int* aux = (int)malloc(n*sizeof);
+	int* permutacao = (int*)malloc(n*sizeof(int));
+	int* aux = (int*)malloc(n*sizeof(int));
 	
 	visit(entrada, permutacao, aux, n, 0);
 
@@ -66,13 +71,13 @@ int* permutacao(int* entrada, int n){
  * verificando se o elemento no menor indice é maior que o elemento no indice posterior (j+1), 
  * se for, troca as posições destes.
  */
-int* buubleSort(int* entrada, int n){
+int* bubbleSort(int* entrada, int n){
 	int i, j, temp;
 
 	for(i=n-1; i>0; i--){
  		for(j=0; j<i; j++){
  			if(entrada[j]>entrada[j+1]){
- 				temp = vetor[j];
+ 				temp = entrada[j];
  				entrada[j] = entrada[j+1];
  				entrada[j+1] = temp;
 			}
@@ -99,8 +104,8 @@ int* shakeSort(int* entrada, int n){
 	int i, j, topo = n, pe = 0;
 	int temp = 0;
 
-	while ((!temp) && (pe<topo) {
-		for (i=pe, t=1; i<topo; i++) {
+	while ((!temp) && (pe<topo)){
+		for (i=pe; i<topo; i++) {
 			if (entrada[i] > entrada[i+1]){ 
 				temp = entrada[i]; 
 				entrada[i] = entrada[i+1];
@@ -114,7 +119,7 @@ int* shakeSort(int* entrada, int n){
 		if (temp)
 			break;
 
-		for(i=topo, t=1; i>pe; i--){
+		for(i=topo; i>pe; i--){
 			if (entrada[i] > entrada[i+1]){ 
 				temp = entrada[i]; 
 				entrada[i] = entrada[i+1];
@@ -153,6 +158,8 @@ int* insertionSort(int* entrada, int n){
 		}
 		entrada[j+1] = temp;
 	}
+
+	return entrada;
 }
 
 
@@ -166,7 +173,7 @@ int* insertionSort(int* entrada, int n){
  * ser movidos para sua posição correta mais rapidamente do que em simples insertion sort.
  * Na implementação a seguir, o gap é reduzido a metade.
  */
-void shellSort(int *entrada, int n) {
+int* shellSort(int *entrada, int n){
     int i, j, aux;
     int gap = n;
 
@@ -185,29 +192,32 @@ void shellSort(int *entrada, int n) {
             entrada [j + gap] = aux;
         }
     }
+
+    return entrada;
 }
 
 /* ------------------------------------------SELECTION SORT-------------------------------
  * Retirado de: http://pt.wikipedia.org/wiki/Selection_sort
  * https://www.youtube.com/watch?v=BSXIolKg5F8
  */
-void selection_sort(int entrada, int n) 
-{ 
+int* selectionSort(int* entrada, int n){ 
   int i, j, min, aux;
 
 	for(i=0; i<(n-1); i++){
 		min = i;
 
-		for(j=(i+1); j<tam; j++){
-			if(num[j] < num[min]){
+		for(j=(i+1); j<n; j++){
+			if(entrada[j] < entrada[min]){
 				min = j;
 			}
 		}
 
-		if(i! = min){
-			aux = num[i];
-			num[i] = num[min];
-			num[min] = aux;
+		if(i !=  min){
+			aux = entrada[i];
+			entrada[i] = entrada[min];
+			entrada[min] = aux;
 		}
 	}
+
+	return entrada;
 }

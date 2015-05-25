@@ -12,3 +12,11 @@ int estaOrdenado(int* entrada, int n){
 
 	return 1;
 }
+
+void imprimir(int* entrada, int n){
+	int i;
+
+	for(i=0; i<n; i++){
+		printf("%d\n", entrada[i]);
+	}
+}
