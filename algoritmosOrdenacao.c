@@ -57,10 +57,11 @@ int visit(int* entrada, int* permutacao, int* aux, int n, int k){
 
 
 int* permutacao(int* entrada, int n){
+	int i;
 	int* permutacao = (int*)malloc(n*sizeof(int));
 	int* aux = (int*)malloc(n*sizeof(int));
 
-	for(int i=0; i<n; i++){
+	for(i=0; i<n; i++){
 		permutacao[i] = aux[i] = 0;
 	}
 	
@@ -240,18 +241,58 @@ int* selectionSort(int* entrada, int n){
  * Retirado de: http://everything2.com/title/Sorting+Algorithms+%253A+Rank+Sort
  *
  */
-int* raknSort(int* entrada, int n){
-	// int i, j;
+int encontrarMaior(int* entrada, int n){
+	int i, max=0;
 
-	// for (int i=0;i<n;i++){
-	// 	r[i]=0; //initialize rank array
-	// 	for(int i=1;i<n;i++)
-	// 		for(int j=0;j<i;j++)
-	// 			if(a[j]<=a[i]) 
-	// 				r[i]++;
-	// 			else r[j]++; 
-	// }
-	printf("FALTA IMPLEMENTAR!");
+	for(i=0; i<n; i++){
+		if(entrada[i] > max){
+			max = entrada[i];
+		}
+	}
+
+	return max;
+}
+
+int* preencheElementos(int* entrada, int* aux, int n, int max){
+	int i, indice;
+
+	//preenche os elementos
+	for(i=0; i<n; i++){
+		indice = entrada[i] - 1;
+		aux[indice] = aux[indice] + 1;
+	}
+
+	//soma as casas
+	for(i=1; i<max; i++){
+		aux[i] = aux[i] + aux[i-1];
+	}
+
+	return aux;
+}
+
+int* raknSort(int* entrada, int n){
+	int* aux;
+	int* ordenado;
+	int i, j, max, k;
+	
+	max = encontrarMaior(entrada, n);
+	aux = (int*)malloc((++max)*sizeof(int));
+	zerar(aux, max);
+
+	aux = preencheElementos(entrada, aux, n, max);
+
+	ordenado = (int*)malloc(n*sizeof(int));
+
+	for(i=0, j=0; i < max; i++){
+		j = aux[i];
+		if(ordenado[j] == 0){
+			ordenado[j] = i;
+		}
+	}
+
+	free(entrada);
+	free(aux);
+	return ordenado;
 }
 
 /* ------------------------------------------QUICK SORT-------------------------------
@@ -259,40 +300,41 @@ int* raknSort(int* entrada, int n){
  *
  */
 
-void trocaValores(int* a, int* b)
-{
-    int aux;
-    aux = *a;
-    *a = *b;
-    *b = aux;
-}
+// void trocaValores(int* a, int* b)
+// {
+//     int aux;
+//     aux = *a;
+//     *a = *b;
+//     *b = aux;
+// }
  
-int divide(int vec[], int esquerdo, int direito)
-{
-    int i, j;
+// int divide(int vec[], int esquerdo, int direito)
+// {
+//     int i, j;
  
-    i = esquerdo;
-    for (j = esquerdo + 1; j <= direito; ++j)
-    {
-        if (vec[j] < vec[esquerdo])
-        {
-            ++i;
-            trocaValores(&vec[i], &vec[j]);
-        }
-    }
-    trocaValores(&vec[esquerdo], &vec[i]);
+//     i = esquerdo;
+//     for (j = esquerdo + 1; j <= direito; ++j)
+//     {
+//         if (vec[j] < vec[esquerdo])
+//         {
+//             ++i;
+//             trocaValores(&vec[i], &vec[j]);
+//         }
+//     }
+//     trocaValores(&vec[esquerdo], &vec[i]);
  
-    return i;
-}
+//     return i;
+// }
  
-void quickSort(int vec[], int esquerdo, int direito)
-{
-    int r;
+// void quickSort(int vec[], int esquerdo, int direito)
+// {
+//     int r;
  
-    if (direito > esquerdo)
-    {
-        r = divide(vec, esquerdo, direito);
-        quickSort(vec, esquerdo, r - 1);
-        quickSort(vec, r + 1, direito);
-    }
-}
+//     if (direito > esquerdo)
+//     {
+//         r = divide(vec, esquerdo, direito);
+//         quickSort(vec, esquerdo, r - 1);
+//         quickSort(vec, r + 1, direito);
+//     }
+// }
+

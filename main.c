@@ -37,7 +37,7 @@ int main(int argc, char* argv []){
 	} else if(strcmp(argv[1], "selection") == 0){
 		ordenado = selectionSort(entrada, n);
 	} else if(strcmp(argv[1], "rank") == 0){
-
+		ordenado = raknSort(entrada, n);
 	} else if(strcmp(argv[1], "quickrecursivoprimeiro") == 0){
 
 	} else if(strcmp(argv[1], "quickrecursivocentral") == 0){

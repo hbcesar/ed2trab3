@@ -20,3 +20,11 @@ void imprimir(int* entrada, int n){
 		printf("%d\n", entrada[i]);
 	}
 }
+
+void zerar(int* entrada, int n){
+	int i;
+
+	for(i=0; i<n; i++){
+		entrada[i] = 0;
+	}
+}

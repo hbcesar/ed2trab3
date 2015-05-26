@@ -3,5 +3,6 @@
 
 int estaOrdenado(int* entrada, int n);
 void imprimir(int* entrada, int n);
+void zerar(int* entrada, int n);
 
 #endif
