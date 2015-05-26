@@ -17,18 +17,20 @@
  */
 
 int verificar(int* entrada, int* permutacao, int* aux, int n){
-	int i;
+	int i, indice;
 
 	for(i=0; i<n; i++){
-		aux[i] = entrada[(permutacao[i])];
+		indice = permutacao[i];
+		aux[i] = entrada[indice-1];
 	}
 
-	if(estaOrdenado(aux, n))
+	if(estaOrdenado(aux, n)){
 		return 1;
+	}
 	else return 0;
 }
 
-void visit(int* entrada, int* permutacao, int* aux, int n, int k){
+int visit(int* entrada, int* permutacao, int* aux, int n, int k){
 	int i;
 	static int level = -1;
 
@@ -36,18 +38,20 @@ void visit(int* entrada, int* permutacao, int* aux, int n, int k){
 	permutacao[k] = level;
 	if (level == n){
 		if(verificar(entrada, permutacao, aux, n)){
-			return;
+			return 1;
  		}
 	} else {
-		for (i = 0; i < n; i++){
+		for (i=0; i<n; i++){
 			if (permutacao[i] == 0){
-				visit(entrada, permutacao, aux, n, i);
+				if(visit(entrada, permutacao, aux, n, i))
+					return 1;
 			}
 		}
 	}
     
 	level = level-1;
 	permutacao[k] = 0;
+	return 0;
 }
 
 
@@ -55,10 +59,14 @@ void visit(int* entrada, int* permutacao, int* aux, int n, int k){
 int* permutacao(int* entrada, int n){
 	int* permutacao = (int*)malloc(n*sizeof(int));
 	int* aux = (int*)malloc(n*sizeof(int));
+
+	for(int i=0; i<n; i++){
+		permutacao[i] = aux[i] = 0;
+	}
 	
 	visit(entrada, permutacao, aux, n, 0);
 
- 	return entrada;
+ 	return aux;
 }
 
 
@@ -101,7 +109,7 @@ int* bubbleSort(int* entrada, int n){
  * Se um dos dois casos nao setar temp = 0, termina o loop do while e o vetor está ordenado
  */
 int* shakeSort(int* entrada, int n){
-	int i, j, topo = n, pe = 0;
+	int i, j, topo = n-1, pe = 0;
 	int temp = 0;
 
 	while ((!temp) && (pe<topo)){
@@ -120,10 +128,10 @@ int* shakeSort(int* entrada, int n){
 			break;
 
 		for(i=topo; i>pe; i--){
-			if (entrada[i] > entrada[i+1]){ 
+			if (entrada[i] < entrada[i-1]){ 
 				temp = entrada[i]; 
-				entrada[i] = entrada[i+1];
-				entrada[i+1] = temp; 
+				entrada[i] = entrada[i-1];
+				entrada[i-1] = temp; 
 				temp = 0;
 			}
 		}

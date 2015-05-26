@@ -25,7 +25,7 @@ int main(int argc, char* argv []){
 	lerEntrada(entrada, n);
 
 	if(strcmp(argv[1], "perm") == 0){
-		ordenado = permutacao(entrada, n); //DEFEITO
+		ordenado = permutacao(entrada, n);
 	} else if(strcmp(argv[1], "bubble") == 0){
 		ordenado = bubbleSort(entrada, n);
 	} else if(strcmp(argv[1], "shake") == 0){

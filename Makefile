@@ -1,6 +1,6 @@
 all: METODOS
 	#./gera -a 10 > entrada.txt
-	./trab3 perm 10 < entrada.txt
+	./trab3 shake 10 < entrada.txt
 
 METODOS:
 	#gcc gera.c -o gera
