@@ -207,6 +207,11 @@ int* shellSort(int *entrada, int n){
 /* ------------------------------------------SELECTION SORT-------------------------------
  * Retirado de: http://pt.wikipedia.org/wiki/Selection_sort
  * https://www.youtube.com/watch?v=BSXIolKg5F8
+ * O algoritmo é baseado em se passar o menor elemento na primeira posicao,
+ * o segundo menor na segunda posicao e assim por diante.
+ * Porém, toda vez que se encontra um elemento menor do que o pivô, o antigo pivô assume o lugar deste novo pivô.
+ * Isso faz com que alguns elementos já fiquem mais próximos da sua posição correta, porém não faz com que o numero de 
+ * comparações diminua.
  */
 int* selectionSort(int* entrada, int n){ 
   int i, j, min, aux;
@@ -228,4 +233,66 @@ int* selectionSort(int* entrada, int n){
 	}
 
 	return entrada;
+}
+
+
+/* ------------------------------------------RANK SORT-------------------------------
+ * Retirado de: http://everything2.com/title/Sorting+Algorithms+%253A+Rank+Sort
+ *
+ */
+int* raknSort(int* entrada, int n){
+	// int i, j;
+
+	// for (int i=0;i<n;i++){
+	// 	r[i]=0; //initialize rank array
+	// 	for(int i=1;i<n;i++)
+	// 		for(int j=0;j<i;j++)
+	// 			if(a[j]<=a[i]) 
+	// 				r[i]++;
+	// 			else r[j]++; 
+	// }
+	printf("FALTA IMPLEMENTAR!");
+}
+
+/* ------------------------------------------QUICK SORT-------------------------------
+ * Retirado de: http://everything2.com/title/Sorting+Algorithms+%253A+Rank+Sort
+ *
+ */
+
+void trocaValores(int* a, int* b)
+{
+    int aux;
+    aux = *a;
+    *a = *b;
+    *b = aux;
+}
+ 
+int divide(int vec[], int esquerdo, int direito)
+{
+    int i, j;
+ 
+    i = esquerdo;
+    for (j = esquerdo + 1; j <= direito; ++j)
+    {
+        if (vec[j] < vec[esquerdo])
+        {
+            ++i;
+            trocaValores(&vec[i], &vec[j]);
+        }
+    }
+    trocaValores(&vec[esquerdo], &vec[i]);
+ 
+    return i;
+}
+ 
+void quickSort(int vec[], int esquerdo, int direito)
+{
+    int r;
+ 
+    if (direito > esquerdo)
+    {
+        r = divide(vec, esquerdo, direito);
+        quickSort(vec, esquerdo, r - 1);
+        quickSort(vec, r + 1, direito);
+    }
 }
