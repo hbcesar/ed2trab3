@@ -33,6 +33,8 @@ void aleatorio(int n){
 int main(int argc, char* argv []){
 	int n, tipo;
 
+	if(argc != 3)
+		exit(1);
 	//obtem o numero de elementos a serem gerados
 	n = atoi(argv[2]);
 

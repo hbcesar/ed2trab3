@@ -1,0 +1,22 @@
+#gcc gera.c -o gera
+gcc -c algoritmosOrdenacao.c
+gcc -c funcoes.c
+gcc -c main.c
+gcc funcoes.o algoritmosOrdenacao.o main.o -o trab3
+#./gera -a 10 > entrada.txt
+./trab3 rank 5 < entrada.txt
+Vamos imprimir o aux da soma das casas0
+1
+2
+2
+2
+3
+3
+4
+4
+5
+0
+268435456
+2
+268435456
+13

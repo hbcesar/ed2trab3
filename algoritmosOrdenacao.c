@@ -238,8 +238,12 @@ int* selectionSort(int* entrada, int n){
 
 
 /* ------------------------------------------RANK SORT-------------------------------
- * Retirado de: http://everything2.com/title/Sorting+Algorithms+%253A+Rank+Sort
- *
+ * Esse nao foi retirado de lugar nenhum, implementei by myself.
+ * O rank sort é um algoritmo consideravelmente rapido e interessante, 
+ * pois não faz nenhuma comparação entre elementos de sua entrada. 
+ * Por outro lado, o algoritmo é limitado a capacidade de alocação (disponibilidade
+ * de memória) para um vetor com o mesmo numero de casas do que seu maior 
+ * elemento + 1 (para suportar o 0).
  */
 int encontrarMaior(int* entrada, int n){
 	int i, max=0;
@@ -258,7 +262,7 @@ int* preencheElementos(int* entrada, int* aux, int n, int max){
 
 	//preenche os elementos
 	for(i=0; i<n; i++){
-		indice = entrada[i] - 1;
+		indice = entrada[i];
 		aux[indice] = aux[indice] + 1;
 	}
 
@@ -273,7 +277,7 @@ int* preencheElementos(int* entrada, int* aux, int n, int max){
 int* raknSort(int* entrada, int n){
 	int* aux;
 	int* ordenado;
-	int i, j, max, k;
+	int i=0, j=0, max=0;
 	
 	max = encontrarMaior(entrada, n);
 	aux = (int*)malloc((++max)*sizeof(int));
@@ -282,16 +286,23 @@ int* raknSort(int* entrada, int n){
 	aux = preencheElementos(entrada, aux, n, max);
 
 	ordenado = (int*)malloc(n*sizeof(int));
+	zerar(ordenado, n);
 
-	for(i=0, j=0; i < max; i++){
-		j = aux[i];
+	for(i=0, j=0; i <max; i++){
+		j = aux[i]-1;
 		if(ordenado[j] == 0){
 			ordenado[j] = i;
 		}
 	}
 
+	//pequena correçao (ou gambiarra), que faz com que o algoritmo funcione bem com 0 na entrada
+	if(aux[0] != 0){
+		ordenado[0] = 0;
+	}
+
 	free(entrada);
 	free(aux);
+
 	return ordenado;
 }
 
@@ -300,41 +311,42 @@ int* raknSort(int* entrada, int n){
  *
  */
 
-// void trocaValores(int* a, int* b)
-// {
-//     int aux;
-//     aux = *a;
-//     *a = *b;
-//     *b = aux;
-// }
+void trocaValores(int* a, int* b)
+{
+    int aux;
+    aux = *a;
+    *a = *b;
+    *b = aux;
+}
  
-// int divide(int vec[], int esquerdo, int direito)
-// {
-//     int i, j;
+int divide(int* vec, int esquerdo, int direito)
+{
+    int i, j;
  
-//     i = esquerdo;
-//     for (j = esquerdo + 1; j <= direito; ++j)
-//     {
-//         if (vec[j] < vec[esquerdo])
-//         {
-//             ++i;
-//             trocaValores(&vec[i], &vec[j]);
-//         }
-//     }
-//     trocaValores(&vec[esquerdo], &vec[i]);
+    i = esquerdo;
+    for (j = esquerdo + 1; j <= direito; ++j)
+    {
+        if (vec[j] < vec[esquerdo])
+        {
+            ++i;
+            trocaValores(&vec[i], &vec[j]);
+        }
+    }
+    trocaValores(&vec[esquerdo], &vec[i]);
  
-//     return i;
-// }
+    return i;
+}
  
-// void quickSort(int vec[], int esquerdo, int direito)
-// {
-//     int r;
+void quickSort(int* vec, int esquerdo, int direito)
+{
+    int r;
  
-//     if (direito > esquerdo)
-//     {
-//         r = divide(vec, esquerdo, direito);
-//         quickSort(vec, esquerdo, r - 1);
-//         quickSort(vec, r + 1, direito);
-//     }
-// }
+    if (direito > esquerdo)
+    {
+        r = divide(vec, esquerdo, direito);
+        quickSort(vec, esquerdo, r - 1);
+        quickSort(vec, r + 1, direito);
+    }
+}
+
 
