@@ -8,5 +8,9 @@ int* insertionSort(int* entrada, int n);
 int* shellSort(int *entrada, int n);
 int* selectionSort(int* entrada, int n);
 int* raknSort(int* entrada, int n);
+int* quickSortRecursivoPrimeiro(int *entrada, int esquerda, int direita);
+int* quickSortRecursivoCentral(int *entrada, int esquerda, int direita);
+int* mergeSort(int* entrada, int n);
+
 
 #endif

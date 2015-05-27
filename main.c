@@ -29,7 +29,7 @@ int main(int argc, char* argv []){
 	} else if(strcmp(argv[1], "bubble") == 0){
 		ordenado = bubbleSort(entrada, n);
 	} else if(strcmp(argv[1], "shake") == 0){
-		ordenado = shakeSort(entrada, n); //DEFEITO
+		ordenado = shakeSort(entrada, n);
 	} else if(strcmp(argv[1], "insertion") == 0){
 		ordenado = insertionSort(entrada, n);
 	} else if(strcmp(argv[1], "shell") == 0){
@@ -39,9 +39,9 @@ int main(int argc, char* argv []){
 	} else if(strcmp(argv[1], "rank") == 0){
 		ordenado = raknSort(entrada, n);
 	} else if(strcmp(argv[1], "quickrecursivoprimeiro") == 0){
-
+		ordenado = quickSortRecursivoPrimeiro(entrada, 0, n-1);
 	} else if(strcmp(argv[1], "quickrecursivocentral") == 0){
-
+		ordenado = quickSortRecursivoCentral(entrada, 0, n-1);
 	} else if(strcmp(argv[1], "quickrecursivomediana3") == 0){
 
 	} else if(strcmp(argv[1], "quickprimeiro") == 0){
@@ -51,7 +51,7 @@ int main(int argc, char* argv []){
 	} else if(strcmp(argv[1], "quickmediana3") == 0){
 
 	} else if(strcmp(argv[1], "merge") == 0){
-
+		ordenado =  mergeSort(entrada, n);
 	} else if(strcmp(argv[1], "heap") == 0){
 
 	} else if(strcmp(argv[1], "radix") == 0){

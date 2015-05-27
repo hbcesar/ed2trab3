@@ -306,47 +306,144 @@ int* raknSort(int* entrada, int n){
 	return ordenado;
 }
 
-/* ------------------------------------------QUICK SORT-------------------------------
- * Retirado de: http://everything2.com/title/Sorting+Algorithms+%253A+Rank+Sort
+/* ------------------------------------------QUICK SORT RECURSIVO-------------------------------
+ * ------------------------------Primeiro Elemento e Elemento Central como Pivô-----------------
  *
  */
+int divide(int *entrada, int esquerda, int direita,  int pivo){
+    int pos, i, temp;
 
-void trocaValores(int* a, int* b)
-{
-    int aux;
-    aux = *a;
-    *a = *b;
-    *b = aux;
-}
- 
-int divide(int* vec, int esquerdo, int direito)
-{
-    int i, j;
- 
-    i = esquerdo;
-    for (j = esquerdo + 1; j <= direito; ++j)
-    {
-        if (vec[j] < vec[esquerdo])
-        {
-            ++i;
-            trocaValores(&vec[i], &vec[j]);
-        }
-    }
-    trocaValores(&vec[esquerdo], &vec[i]);
- 
-    return i;
-}
- 
-void quickSort(int* vec, int esquerdo, int direito)
-{
-    int r;
- 
-    if (direito > esquerdo)
-    {
-        r = divide(vec, esquerdo, direito);
-        quickSort(vec, esquerdo, r - 1);
-        quickSort(vec, r + 1, direito);
-    }
+	temp = entrada[pivo];
+	entrada[pivo] = entrada[direita];
+	entrada[direita] = temp;
+
+	pos = esquerda;
+
+	for(i = esquerda; i < direita; i++){
+		if (entrada[i] < entrada[direita]){
+			temp = entrada[i];
+			entrada[i] = entrada[pos];
+			entrada[pos] = temp;
+			pos++;
+		}
+	}
+
+	temp = entrada[pos];
+	entrada[pos] = entrada[direita];
+	entrada[direita] = temp;
+
+    return pos;
 }
 
+int* quickSortRecursivoPrimeiro(int *entrada, int esquerda, int direita){
+	int pivo=0, pos=0;
 
+	if (esquerda < direita){
+		pivo = esquerda;
+		pos = divide(entrada, esquerda, direita, pivo);
+ 		quickSortRecursivoPrimeiro(entrada, esquerda, pos - 1);
+		quickSortRecursivoPrimeiro(entrada, pos + 1, direita);
+	}
+
+	return entrada;
+}
+
+int* quickSortRecursivoCentral(int *entrada, int esquerda, int direita){
+	int pivo=0, pos=0;
+
+	if (esquerda < direita){
+		pivo = (esquerda+direita)/2;
+		pos = divide(entrada, esquerda, direita, pivo);
+ 		quickSortRecursivoCentral(entrada, esquerda, pos - 1);
+		quickSortRecursivoCentral(entrada, pos + 1, direita);
+	}
+
+	return entrada;
+}
+
+int mediana(int* entrada, int a, int b, int c){
+	int esquerda = entrada[a];
+	int meio = entrada[b];
+	int direita = entrada[c];
+
+	if((esquerda>meio && esquerda<direita) || (esquerda<meio && esquerda>direita)){
+		return a;
+	} else if((meio>esquerda && meio<direita) || (meio<esquerda && meio>direita)){
+		return b;
+	} else if((direita>esquerda && direita<meio) || (direita<esquerda && direita>meio)){
+		return c;
+	}
+
+	return 0;
+}
+
+
+/* ------------------------------------------MERGE SORT------------------------------------
+ * Retirado de: http://pt.wikipedia.org/wiki/Merge_sort#C.C3.B3digo_em_C
+ * e: https://www.youtube.com/watch?v=cDNqk4tdvqQ
+ * O lema dessa algoritmo se basea no "dividir para conquistar". 
+ * MergeSort faz separar as casas do vetor em grupos (de casas consecutivas) recursivamente,
+ * até que o numero de elementos por grupo seja dois. Então, volta a recursão unindo os grupos,
+ * porém desta vez, com elementos ordenados.
+ */
+void merge(int* entrada, int n){
+	int mid;
+	int i, j, k;
+	int* tmp;
+ 
+	tmp = (int*)malloc(n*sizeof(int));
+
+	if (tmp == NULL) {
+		exit(1);
+	}
+ 
+	mid = n/2;
+ 
+	i = 0;
+	j = mid;
+	k = 0;
+
+	while (i < mid && j < n) {
+		if (entrada[i] <= entrada[j]) {
+			tmp[k] = entrada[i++];
+		}
+		else {
+			tmp[k] = entrada[j++];
+		}
+		++k;
+	}
+ 
+	if (i == mid) {
+		while (j < n) {
+			tmp[k++] = entrada[j++];
+		}
+	}
+	else {
+		while (i < mid) {
+			tmp[k++] = entrada[i++];
+		}
+	}
+ 
+	for (i = 0; i < n; ++i) {
+		entrada[i] = tmp[i];
+	}
+ 
+	free(tmp);
+}
+ 
+int* mergeSort(int* entrada, int n){
+	int mid;
+ 
+	if(n > 1) {
+		mid = n / 2;
+		mergeSort(entrada, mid);
+		mergeSort(entrada + mid, n - mid);
+		merge(entrada, n);
+	}
+
+	return entrada;
+}
+
+/* ------------------------------------------HEAP SORT------------------------------------
+ * Retirado de: http://pt.wikipedia.org/wiki/Heapsort#C.C3.B3digo_em_C
+ */

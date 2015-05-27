@@ -33,8 +33,10 @@ void aleatorio(int n){
 int main(int argc, char* argv []){
 	int n, tipo;
 
-	if(argc != 3)
+	if(argc != 3){
+		printf("Erro, número de argumentos inválidos!");
 		exit(1);
+	}
 	//obtem o numero de elementos a serem gerados
 	n = atoi(argv[2]);
 
