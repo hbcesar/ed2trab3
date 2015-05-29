@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "TADPilha.h"
 #include "TADFuncoes.h"
 
 
@@ -277,7 +278,7 @@ int* preencheElementos(int* entrada, int* aux, int n, int max){
 int* raknSort(int* entrada, int n){
 	int* aux;
 	int* ordenado;
-	int i=0, j=0, max=0;
+	int i=0, j=0, pos=0, max=0;
 	
 	max = encontrarMaior(entrada, n);
 	aux = (int*)malloc((++max)*sizeof(int));
@@ -288,16 +289,23 @@ int* raknSort(int* entrada, int n){
 	ordenado = (int*)malloc(n*sizeof(int));
 	zerar(ordenado, n);
 
-	for(i=0, j=0; i <max; i++){
-		j = aux[i]-1;
-		if(ordenado[j] == 0){
-			ordenado[j] = i;
+	//pequena correçao (ou gambiarra), que faz com que o algoritmo funcione bem com numeros 0 na entrada
+	if(aux[0] != 0){
+		j = aux[0];
+		while (j>0){
+			ordenado[pos++] = 0;
+			j--;
 		}
 	}
 
-	//pequena correçao (ou gambiarra), que faz com que o algoritmo funcione bem com 0 na entrada
-	if(aux[0] != 0){
-		ordenado[0] = 0;
+	for(i=1, j=0; i<max; i++){
+		j = aux[i]-aux[i-1];
+		if(j>0){
+			while(j>0){
+				ordenado[pos++] = i;
+				j--;
+			}
+		}
 	}
 
 	free(entrada);
@@ -307,9 +315,9 @@ int* raknSort(int* entrada, int n){
 }
 
 /* ------------------------------------------QUICK SORT RECURSIVO-------------------------------
- * ------------------------------Primeiro Elemento e Elemento Central como Pivô-----------------
  *
- */
+ *
+ * Funcao que divide os menores pra um lado e os maiores pro outro */
 int divide(int *entrada, int esquerda, int direita,  int pivo){
     int pos, i, temp;
 
@@ -335,6 +343,7 @@ int divide(int *entrada, int esquerda, int direita,  int pivo){
     return pos;
 }
 
+/* ------------------------------Primeiro Elemento como Pivô------------------------------ */
 int* quickSortRecursivoPrimeiro(int *entrada, int esquerda, int direita){
 	int pivo=0, pos=0;
 
@@ -348,6 +357,8 @@ int* quickSortRecursivoPrimeiro(int *entrada, int esquerda, int direita){
 	return entrada;
 }
 
+
+/* ------------------------------Elemento Central como Pivô------------------------------ */
 int* quickSortRecursivoCentral(int *entrada, int esquerda, int direita){
 	int pivo=0, pos=0;
 
@@ -361,22 +372,43 @@ int* quickSortRecursivoCentral(int *entrada, int esquerda, int direita){
 	return entrada;
 }
 
+/* ------------------------------Mediana de Três como Pivô------------------------------ */
+/* Retorna a mediana */
 int mediana(int* entrada, int a, int b, int c){
-	int esquerda = entrada[a];
-	int meio = entrada[b];
-	int direita = entrada[c];
+	int vet[3];
 
-	if((esquerda>meio && esquerda<direita) || (esquerda<meio && esquerda>direita)){
+	vet[0] = entrada[a];
+	vet[1] = entrada[b];
+	vet[2] = entrada[c];
+
+	/* para um vetor tão pequeno, a escolha do algoritmo de ordenação não traz significativa diferença
+	 * nesse caso busquei o mais simples e com menos chamadas/atribuições
+	 */
+	selectionSort(vet, 3); 
+
+	if(vet[1] == entrada[a])
 		return a;
-	} else if((meio>esquerda && meio<direita) || (meio<esquerda && meio>direita)){
+	else if (vet[1] == entrada[b])
 		return b;
-	} else if((direita>esquerda && direita<meio) || (direita<esquerda && direita>meio)){
+	else if (vet[1] == entrada[c])
 		return c;
-	}
 
 	return 0;
 }
 
+int* quickRecursivoMediana3(int *entrada, int esquerda, int direita){
+	int pivo=0, pos=0;
+
+	if (esquerda < direita){
+		pivo = (esquerda+direita)/2;
+		pivo = mediana(entrada, esquerda, pivo, direita);
+		pos = divide(entrada, esquerda, direita, pivo);
+ 		quickRecursivoMediana3(entrada, esquerda, pos - 1);
+		quickRecursivoMediana3(entrada, pos + 1, direita);
+	}
+
+	return entrada;
+}
 
 /* ------------------------------------------MERGE SORT------------------------------------
  * Retirado de: http://pt.wikipedia.org/wiki/Merge_sort#C.C3.B3digo_em_C
@@ -442,6 +474,43 @@ int* mergeSort(int* entrada, int n){
 	}
 
 	return entrada;
+}
+
+/* ------------------------------------------QUICK SORT NÃO RECURSIVO-------------------------------
+ * Baseado em: http://homepages.dcc.ufmg.br/~rprates/aedsII/Quicksort_NaoRec.pdf
+ * e: http://pwp.net.ipl.pt/cc.isel/cvaz/Textos/AED/QuickSort.pdf
+ */
+int* quickSortPrimeiro(int* entrada, int n){
+	Pilha* pilha = NULL;
+	int direita=n-1, esquerda=0, pos;
+
+	pilha = inicializaPilha(n);
+
+	empilha(pilha, esquerda);
+	empilha(pilha, direita);
+
+	while(!vazia(pilha)){
+		direita = desempilha(pilha);
+		esquerda = desempilha(pilha);
+
+		if(direita <= esquerda)
+			continue;
+
+		pos = divide(entrada, esquerda, direita);
+
+		if (pos-esquerda > direita-pos){
+			empilha(pilha, esquerda);
+			empilha(pilha, pos-1);
+		}
+	
+		empilha(pilha, pos+1);
+		empilha(pilha, direita);
+
+		if (pos-esquerda <= direita-pos){
+			empilha(pilha, esquerda);
+			empilha(pilha, pos-1);
+		}
+	}
 }
 
 /* ------------------------------------------HEAP SORT------------------------------------

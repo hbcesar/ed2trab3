@@ -1,6 +1,6 @@
 all: METODOS
-	#./gera -a 10 > entrada.txt
-	./trab3 merge 20 < entrada.txt
+	./gera -a 5 > entrada.txt
+	./trab3 quickrecursivomediana3 5 < entrada.txt
 
 METODOS:
 	#gcc gera.c -o gera

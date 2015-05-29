@@ -43,7 +43,7 @@ int main(int argc, char* argv []){
 	} else if(strcmp(argv[1], "quickrecursivocentral") == 0){
 		ordenado = quickSortRecursivoCentral(entrada, 0, n-1);
 	} else if(strcmp(argv[1], "quickrecursivomediana3") == 0){
-
+		ordenado = quickRecursivoMediana3(entrada, 0, n-1);
 	} else if(strcmp(argv[1], "quickprimeiro") == 0){
 
 	} else if(strcmp(argv[1], "quickcentral") == 0){
