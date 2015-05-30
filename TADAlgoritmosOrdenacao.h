@@ -11,7 +11,12 @@ int* raknSort(int* entrada, int n);
 int* quickSortRecursivoPrimeiro(int *entrada, int esquerda, int direita);
 int* quickSortRecursivoCentral(int *entrada, int esquerda, int direita);
 int* quickRecursivoMediana3(int *entrada, int esquerda, int direita);
+int* quickSortPrimeiro(int* entrada, int n);
+int* quickSortCentral(int* entrada, int n);
+int* quickSortMediana(int* entrada, int n);
 int* mergeSort(int* entrada, int n);
+int* heapSort(int* entrada, int n);
+int* radixSort(int* entrada, int n);
 
 
 #endif

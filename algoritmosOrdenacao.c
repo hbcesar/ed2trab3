@@ -315,9 +315,16 @@ int* raknSort(int* entrada, int n){
 }
 
 /* ------------------------------------------QUICK SORT RECURSIVO-------------------------------
- *
- *
- * Funcao que divide os menores pra um lado e os maiores pro outro */
+ * Quicksort consiste em rearranjar as chaves com base em um elemento pivô, movendo as menores
+ * do que este para a esquerda e as maiores para direita. A implementação do algoritmo é baseada na
+ * idéia de dividir para conquistar. Ou seja, dividir o vetor em subvetores e realizar a mesma ação,
+ * até que estes estejam pequenos o bastante para que a recursao/pilha retorne juntando os pequenos 
+ * vetores, também reordenando-os. A utilização mais comum para isto se dá com uso de recursão.
+ * Para implementar a versão não recursiva, fiz o uso de estrutura Pilha (implementada em Pilha.c).
+ * A função divide é usada nas 6 implementações. A função que retorna mediana também é reutilizada.
+ */
+
+/* Funcao que divide os menores pra um lado e os maiores pro outro */
 int divide(int *entrada, int esquerda, int direita,  int pivo){
     int pos, i, temp;
 
@@ -410,6 +417,121 @@ int* quickRecursivoMediana3(int *entrada, int esquerda, int direita){
 	return entrada;
 }
 
+/* ------------------------------------------QUICK SORT NÃO RECURSIVO-------------------------------
+ * Baseado em: http://homepages.dcc.ufmg.br/~rprates/aedsII/Quicksort_NaoRec.pdf
+ * e: http://pwp.net.ipl.pt/cc.isel/cvaz/Textos/AED/QuickSort.pdf
+ */
+ /* ------------------------------Primeiro Elemento como Pivô------------------------------ */
+int* quickSortPrimeiro(int* entrada, int n){
+	Pilha* pilha = NULL;
+	int direita=n-1, esquerda=0, pos, pivo;
+
+	pilha = inicializaPilha(n);
+
+	empilha(pilha, esquerda);
+	empilha(pilha, direita);
+
+	while(!vazia(pilha)){
+		direita = desempilha(pilha);
+		esquerda = desempilha(pilha);
+		pivo = esquerda;
+
+		if(direita <= esquerda)
+			continue;
+
+		pos = divide(entrada, esquerda, direita, pivo);
+
+		if (pos-esquerda > direita-pos){
+			empilha(pilha, esquerda);
+			empilha(pilha, pos-1);
+		}
+	
+		empilha(pilha, pos+1);
+		empilha(pilha, direita);
+
+		if (pos-esquerda <= direita-pos){
+			empilha(pilha, esquerda);
+			empilha(pilha, pos-1);
+		}
+	}
+
+	return entrada;
+}
+
+/* ------------------------------Elemento Central como Pivô------------------------------ */
+int* quickSortCentral(int* entrada, int n){
+	Pilha* pilha = NULL;
+	int direita=n-1, esquerda=0, pos, pivo;
+
+	pilha = inicializaPilha(n);
+
+	empilha(pilha, esquerda);
+	empilha(pilha, direita);
+
+	while(!vazia(pilha)){
+		direita = desempilha(pilha);
+		esquerda = desempilha(pilha);
+		pivo = (direita + esquerda) / 2;
+
+		if(direita <= esquerda)
+			continue;
+
+		pos = divide(entrada, esquerda, direita, pivo);
+
+		if (pos-esquerda > direita-pos){
+			empilha(pilha, esquerda);
+			empilha(pilha, pos-1);
+		}
+	
+		empilha(pilha, pos+1);
+		empilha(pilha, direita);
+
+		if (pos-esquerda <= direita-pos){
+			empilha(pilha, esquerda);
+			empilha(pilha, pos-1);
+		}
+	}
+
+	return entrada;
+}
+
+/* ------------------------------Mediana de Três como Pivô------------------------------ */
+int* quickSortMediana(int* entrada, int n){
+	Pilha* pilha = NULL;
+	int direita=n-1, esquerda=0, pos, pivo;
+
+	pilha = inicializaPilha(n);
+
+	empilha(pilha, esquerda);
+	empilha(pilha, direita);
+
+	while(!vazia(pilha)){
+		direita = desempilha(pilha);
+		esquerda = desempilha(pilha);
+		pivo = mediana(entrada, esquerda, ((direita + esquerda) / 2), direita);
+
+		if(direita <= esquerda)
+			continue;
+
+		pos = divide(entrada, esquerda, direita, pivo);
+
+		if (pos-esquerda > direita-pos){
+			empilha(pilha, esquerda);
+			empilha(pilha, pos-1);
+		}
+	
+		empilha(pilha, pos+1);
+		empilha(pilha, direita);
+
+		if (pos-esquerda <= direita-pos){
+			empilha(pilha, esquerda);
+			empilha(pilha, pos-1);
+		}
+	}
+
+	return entrada;
+}
+
 /* ------------------------------------------MERGE SORT------------------------------------
  * Retirado de: http://pt.wikipedia.org/wiki/Merge_sort#C.C3.B3digo_em_C
  * e: https://www.youtube.com/watch?v=cDNqk4tdvqQ
@@ -476,43 +598,95 @@ int* mergeSort(int* entrada, int n){
 	return entrada;
 }
 
-/* ------------------------------------------QUICK SORT NÃO RECURSIVO-------------------------------
- * Baseado em: http://homepages.dcc.ufmg.br/~rprates/aedsII/Quicksort_NaoRec.pdf
- * e: http://pwp.net.ipl.pt/cc.isel/cvaz/Textos/AED/QuickSort.pdf
+/* ------------------------------------------HEAP SORT------------------------------------
+ * Baseado em: https://www.youtube.com/watch?v=mhQpxD_ThWM
+ * Esse é meu algoritmo de ordenação preferido.
+ * Também é o preferido da minha professora.
+ * O Heap Sort é baseado no ordenamento usando a abstração árvore balanceada.
+ * Nessa implementação, o vetor é reorganizado de modo que o pai (por exemplo i=1)
+ * tenha valor maior do que seus dois filhos (2*i e (2*i)+1). Assim, o primeiro elemento
+ * desse vetor reorganizado é o maior de todos.
  */
-int* quickSortPrimeiro(int* entrada, int n){
-	Pilha* pilha = NULL;
-	int direita=n-1, esquerda=0, pos;
+int* heapfy(int* entrada, int n){
+	int pai, filho1, filho2;
+	int i, temp, flag=1, swap;
 
-	pilha = inicializaPilha(n);
+	while(flag){
+		
+		flag = 0;
+		//n é decrementado pela funcao heapsort
+		for(i=0; (2*i) < n-1; i++){
+			pai = i;
+			filho1 = (2 * (i + 1)) - 1;
+			filho2 = (2 * (i + 1));
 
-	empilha(pilha, esquerda);
-	empilha(pilha, direita);
+			if(filho2<n && (entrada[filho1] < entrada[filho2])){
+				swap = filho2;
+			} else {
+				swap = filho1;
+			}
 
-	while(!vazia(pilha)){
-		direita = desempilha(pilha);
-		esquerda = desempilha(pilha);
-
-		if(direita <= esquerda)
-			continue;
-
-		pos = divide(entrada, esquerda, direita);
-
-		if (pos-esquerda > direita-pos){
-			empilha(pilha, esquerda);
-			empilha(pilha, pos-1);
-		}
-	
-		empilha(pilha, pos+1);
-		empilha(pilha, direita);
-
-		if (pos-esquerda <= direita-pos){
-			empilha(pilha, esquerda);
-			empilha(pilha, pos-1);
+			if(entrada[pai] < entrada[swap]){
+				temp = entrada[pai];
+				entrada[pai] = entrada[swap];
+				entrada[swap] = temp;
+				flag = 1;
+			} 
 		}
 	}
+
+
+	return entrada;
 }
 
-/* ------------------------------------------HEAP SORT------------------------------------
- * Retirado de: http://pt.wikipedia.org/wiki/Heapsort#C.C3.B3digo_em_C
+int* heapSort(int* entrada, int n){
+	int* ordenado = NULL;
+	int i, j, temp;
+
+	/* dentro desse loop, o primeiro elemento do vetor
+	 * é trocado com o ultimo, e o vetor é novamente submetido a "heapficação"
+	 * porém, o tamanho do vetor passado vai decrementando de forma que o vetor
+	 * seja ordenado de tras pra frente.
+	 */
+	for(i=n, j=n-1; i>0; i--, j--){
+		entrada = heapfy(entrada, i);	
+		temp = entrada[j];
+		entrada[j] = entrada[0];
+		entrada[0] = temp;
+	}
+
+	return entrada;
+
+}
+
+/* ------------------------------------------RADIX SORT (não binário)------------------------------------
+ * Retirado de: http://pt.wikipedia.org/wiki/Radix_sort#C.C3.B3digo_em_C
  */
+int* radixSort(int* entrada, int n){
+    int i;
+    int b[n];
+    int maior = entrada[0];
+    int exp = 1;
+ 
+ 	maior = encontrarMaior(entrada, n);
+ 
+    while (maior/exp > 0) {
+        int bucket[10] = { 0 };
+
+    	for (i = 0; i < n; i++)
+    	    bucket[(entrada[i] / exp) % 10]++; 
+
+    	for (i = 1; i < 10; i++)
+    	    bucket[i] += bucket[i - 1];
+
+    	for (i = n - 1; i >= 0; i--)
+    	    b[--bucket[(entrada[i] / exp) % 10]] = entrada[i];
+
+    	for (i = 0; i < n; i++)
+    	    entrada[i] = b[i];
+    	
+    	exp *= 10;
+    }
+
+    return entrada;
+}

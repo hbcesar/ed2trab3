@@ -2,6 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+void lerEntrada(int* entrada, int n){
+	int i;
+
+	for(i=0; i<n; i++){
+		scanf("%d", entrada+i);
+	}
+}
+
 int estaOrdenado(int* entrada, int n){
 	int i;
 
