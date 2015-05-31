@@ -24,6 +24,10 @@ int estaOrdenado(int* entrada, int n){
 void imprimir(int* entrada, int n){
 	int i;
 
+	if(entrada == NULL){
+		return;
+	}
+
 	for(i=0; i<n; i++){
 		printf("%d\n", entrada[i]);
 	}

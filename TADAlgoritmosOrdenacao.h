@@ -18,5 +18,7 @@ int* mergeSort(int* entrada, int n);
 int* heapSort(int* entrada, int n);
 int* radixSort(int* entrada, int n);
 
+int* bucketSort(int* entrada, int n);
+
 
 #endif

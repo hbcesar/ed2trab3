@@ -67,6 +67,7 @@ int main(int argc, char* argv []){
 	} else if(strcmp(argv[1], "radixbin") == 0){
 
 	} else if(strcmp(argv[1], "bucket") == 0){
+		ordenado = bucketSort(entrada, n);
 
 	} else {
 		printf("Algoritmo especificado não é válido\n");

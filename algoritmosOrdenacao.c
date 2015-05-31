@@ -3,6 +3,7 @@
 #include <string.h>
 #include "TADPilha.h"
 #include "TADFuncoes.h"
+#define TAM_BALDE 100
 
 
 /* ------------------------------------------PERMUTACAO-------------------------------
@@ -660,6 +661,9 @@ int* heapSort(int* entrada, int n){
 }
 
 /* ------------------------------------------RADIX SORT (não binário)------------------------------------
+ * A ideia do Radix Sort é ordenar os numeros progressivamente de acordo com as unidades, depois centenas,
+ * depois milhares e assim sucessivamente. A seguir implementação comparando os numeros decimais e entao
+ * ordenando usando binarios.
  * Retirado de: http://pt.wikipedia.org/wiki/Radix_sort#C.C3.B3digo_em_C
  */
 int* radixSort(int* entrada, int n){
@@ -670,18 +674,24 @@ int* radixSort(int* entrada, int n){
  
  	maior = encontrarMaior(entrada, n);
  
+ 	//esse while para quando se atinge o numero de algarismos do maior numero da entrada
     while (maior/exp > 0) {
+    	//inicia o veor em zeros
         int bucket[10] = { 0 };
 
+        //conta quantos numeros terminam com 0, 1, 2...
     	for (i = 0; i < n; i++)
     	    bucket[(entrada[i] / exp) % 10]++; 
 
+    	//calcula as posicoes (pré-ordenadamente)
     	for (i = 1; i < 10; i++)
     	    bucket[i] += bucket[i - 1];
 
+    	//coloca essa galerinha na posicao certinha (de acordo com o algorismo exp)
     	for (i = n - 1; i >= 0; i--)
     	    b[--bucket[(entrada[i] / exp) % 10]] = entrada[i];
 
+    	//aqui o vetor entrada recebe o vetor b pré-ordenado
     	for (i = 0; i < n; i++)
     	    entrada[i] = b[i];
     	
@@ -690,3 +700,192 @@ int* radixSort(int* entrada, int n){
 
     return entrada;
 }
+
+/* ------------------------------------------BUCKET SORT------------------------------------
+ * O Bucket Sort se basea na ideia de dividir numeros com ordem de grandeza parecida em baldes. 
+ * Entao ordenar os baldes individualmente (com numeros de ordem de grandeza parecida, o processo 
+ * de ordenação tende a ser mais rapido) e depois juntar esses baldes ja ordenados.
+ * Abaixo duas implementações, uma usando vetor (numero de elementos em cada balde é limitado) 
+ * e outra (comentada) usando lista (gasto de tempo alocando/desalocando/copiando listas).
+http://pt.wikipedia.org/wiki/Bucket_sort
+
+*/
+
+typedef struct bucket{
+	int topo;
+	int balde[TAM_BALDE];
+ } Bucket;
+ 
+ //int main(){}                                                  
+ 
+int* bucketSort(int* entrada, int n){
+	int num_bucket = encontrarMaior(entrada, n)/5;
+ 	Bucket b[num_bucket];         
+
+	int i,j,k;                                                 
+
+	for(i=0; i < num_bucket; i++) //inicializa todos os "topo"
+		b[i].topo=0;
+ 
+	for(i=0; i < n; i++){ //verifica em que balde o elemento deve ficar
+		j=(num_bucket)-1;
+		
+		while(1){
+			if(j<0)
+				break;
+
+			if(entrada[i] >= j*10){
+				if(b[j].topo > TAM_BALDE){
+					printf("Balde esburrou!\n");
+					exit(1);
+				}
+
+				b[j].balde[b[j].topo] = entrada[i];
+				(b[j].topo)++;
+				break;
+			}
+			j--;
+		}
+	}
+ 
+	for(i=0; i < num_bucket; i++) //ordena os baldes
+		if(b[i].topo)
+			bubbleSort(b[i].balde,b[i].topo);
+ 
+
+	for(j=0, i=0; j < num_bucket;j++){ //põe os elementos dos baldes de volta no vetor
+		for(k=0; k < b[j].topo; k++){
+			entrada[i]=b[j].balde[k];
+			i++;
+		}
+	}
+
+	return entrada;
+}
+
+/* ------------------------------------------BUCKET SORT (implementacao com lista)---------------*/
+
+// typedef struct balde{
+// 	int item;
+// 	struct balde* prox;
+// } Balde;
+
+// typedef struct lista{
+// 	int tamanho;
+// 	Balde* balde;
+// } Lista;
+
+// Lista* insereBalde(Lista* l, int item){
+// 	if (l == NULL){
+// 		l = (Lista*) malloc(sizeof(Lista));
+// 	}
+	
+// 	Balde* novo = (Balde*) malloc(sizeof(Balde));
+
+// 	novo->item = item;
+// 	novo->prox = l->balde;
+// 	l->balde = novo;
+// 	l->tamanho = l->tamanho + 1;
+
+
+// 	return l;
+// }
+
+// int* listaToVetor(Lista* l, int n){
+// 	Balde* aux;
+// 	Balde* apagar;
+// 	int* vet = (int*)malloc(n*sizeof(int));
+// 	int i;
+
+// 	aux = l->balde;
+
+// 	for(i=0; i<n; i++){
+// 		vet[i] = aux->item;
+// 		apagar = aux;
+// 		aux = aux->prox;
+// 		free(apagar);
+// 	}
+
+// 	free(l);
+
+// 	return vet;
+
+// }
+
+// int* bucket_sort(int* entrada, int n){
+// 	int num_bucket = encontrarMaior(entrada, n)/5;
+// 	int i, j, k;
+// 	int* vet;
+
+// 	//vetor com ponteiros pros baldes (listas encadeadas)
+// 	Lista* b[num_bucket]; 
+// 	int* vet_ord[num_bucket];                                     
+                                                
+
+// 	for(i=0; i<num_bucket; i++) //inicializa todos os baldes
+// 		b[i] = NULL;
+ 
+// 	for(i=0; i<n; i++){ //verifica em que balde o elemento deve ficar
+// 		j= (num_bucket) - 1;
+		
+// 		while(1){
+// 			if(j < 0)
+// 				break;
+			
+// 			if(entrada[i] >= j*10){
+// 				b[j] = insereBalde(b[j], entrada[i]);
+// 				break;
+// 			}
+			
+// 			j--;
+// 		}
+// 	}
+ 
+// 	for(i=0;i<num_bucket;i++){ //ordena os baldes
+// 		if(b[i] != NULL){
+// 			k = b[i]->tamanho;
+// 			vet_ord[i] = listaToVetor(b[i], k);
+// 			vet_ord[i] = bubbleSort(vet_ord[i], k);
+
+// 		}
+// 	}
+ 
+// 	for(j=0, i=0; j<num_bucket; j++){ //põe os elementos dos baldes de volta no vetor
+// 		for(k=0; k<(sizeof(vet_ord[j])/sizeof(int)); k++){
+// 			entrada[i] = vet_ord[j][k];
+// 			i++;
+// 		}
+// 	}
+
+
+// 	for(i=0; i<num_bucket; i++){
+// 		free(vet_ord[i]);
+// 	}
+// 	free(vet_ord);
+// 	free(b);
+
+// 	return entrada;
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

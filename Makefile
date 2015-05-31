@@ -1,6 +1,6 @@
 all: METODOS
 	./gera -a 10 > entrada.txt
-	./trab3 radix 10 < entrada.txt
+	./trab3 tuasnega 10 < entrada.txt
 
 METODOS:
 	#gcc gera.c -o gera
